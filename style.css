@@ -1,0 +1,131 @@
+:root {
+  --bg: #0a1628;
+  --bg-alt: #0e1e35;
+  --accent: #2dd4bf;
+  --text: #e6edf6;
+  --muted: #9fb0c3;
+  --card: #12233d;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header */
+.site-header {
+  border-bottom: 1px solid rgba(45, 212, 191, 0.15);
+  padding: 16px 0;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent);
+}
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+  margin-left: 20px;
+  font-size: 0.95rem;
+}
+
+.nav a:hover { color: var(--accent); }
+
+/* Hero */
+.hero {
+  padding: 80px 0 60px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.4rem;
+  margin-bottom: 16px;
+}
+
+.lead {
+  font-size: 1.15rem;
+  color: var(--muted);
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+/* Sections */
+.section { padding: 56px 0; }
+
+.section-alt { background: var(--bg-alt); }
+
+.section h2 {
+  font-size: 1.6rem;
+  margin-bottom: 24px;
+  color: var(--accent);
+}
+
+/* Product card */
+.product-card {
+  background: var(--card);
+  border: 1px solid rgba(45, 212, 191, 0.2);
+  border-radius: 12px;
+  padding: 28px;
+}
+
+.product-card h3 { margin-bottom: 12px; font-size: 1.25rem; }
+
+.product-note {
+  margin-top: 14px;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+/* Build list */
+.build-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.build-list li {
+  background: var(--card);
+  border: 1px solid rgba(45, 212, 191, 0.15);
+  border-radius: 8px;
+  padding: 14px 18px;
+}
+
+.coming-soon { color: var(--muted); font-style: italic; }
+
+/* Footer */
+.site-footer {
+  border-top: 1px solid rgba(45, 212, 191, 0.15);
+  padding: 24px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .hero { padding: 56px 0 40px; }
+  .hero h1 { font-size: 1.8rem; }
+  .nav a { margin-left: 14px; }
+}
