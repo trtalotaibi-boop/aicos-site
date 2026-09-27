@@ -4,18 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AICOS Offer Profit Check — تجربة مجانية 3 أيام</title>
-<meta name="description" content="افحص ربحية العرض قبل إطلاقه: الربح، الهامش، وأقصى خصم آمن.">
+<meta name="description" content="افحص ربحية العرض قبل إطلاقه واحفظ تقريرك على جهازك.">
 <style>
 :root{--bg:#0b1220;--card:#111a2b;--line:#26344d;--text:#eef4ff;--muted:#a8b3c7;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444;--accent:#5b8cff}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#09111f,#0d1627);color:var(--text)}
-.wrap{max-width:760px;margin:auto;padding:22px}.brand{font-weight:800;letter-spacing:.5px;color:#9db7ff}.card{background:rgba(17,26,43,.96);border:1px solid var(--line);border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 12px 34px rgba(0,0,0,.18)}
-h1{font-size:28px;margin:8px 0}h2{font-size:19px;margin:0 0 14px}.lead{color:var(--muted);line-height:1.8;margin:0}.trial{display:flex;justify-content:space-between;gap:12px;align-items:center}.pill{background:#17233a;border:1px solid #30425f;border-radius:999px;padding:8px 12px;font-size:13px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.wrap{max-width:820px;margin:auto;padding:22px}.brand{font-weight:800;letter-spacing:.5px;color:#9db7ff}.card{background:rgba(17,26,43,.96);border:1px solid var(--line);border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 12px 34px rgba(0,0,0,.18)}
+h1{font-size:28px;margin:8px 0}h2{font-size:19px;margin:0 0 14px}h3{font-size:16px;margin:0 0 8px}.lead{color:var(--muted);line-height:1.8;margin:0}.trial{display:flex;justify-content:space-between;gap:12px;align-items:center}.pill{background:#17233a;border:1px solid #30425f;border-radius:999px;padding:8px 12px;font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.grid,.kpis{grid-template-columns:1fr!important}.trial,.resultTop{align-items:flex-start;flex-direction:column}}
 label{font-size:13px;color:#cbd5e1;display:block}input{width:100%;margin-top:7px;background:#0a1323;color:#fff;border:1px solid #33435e;border-radius:11px;padding:12px;font-size:16px;outline:none}input:focus{border-color:var(--accent)}
-button{width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:800;background:var(--accent);color:white;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.7}.hidden{display:none}.resultTop{display:flex;justify-content:space-between;gap:10px;align-items:center}.status{font-weight:900;font-size:22px}.GREEN{color:var(--ok)}.YELLOW{color:var(--warn)}.RED{color:var(--bad)}.NEEDS{color:var(--warn)}
-.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.kpi{background:#0a1323;border:1px solid #273751;padding:13px;border-radius:12px}.kpi small{display:block;color:var(--muted);margin-bottom:5px}.kpi strong{font-size:20px}
+button{width:100%;border:0;border-radius:12px;padding:14px;font-size:15px;font-weight:800;background:var(--accent);color:white;cursor:pointer}.secondary{background:#17233a;border:1px solid #30425f}.danger{background:#32151a;border:1px solid #6a2029}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}@media(max-width:640px){.actions{grid-template-columns:1fr}}
+.note{font-size:12px;color:var(--muted);line-height:1.7}.hidden{display:none}.resultTop{display:flex;justify-content:space-between;gap:10px;align-items:center}.status{font-weight:900;font-size:22px}.GREEN{color:var(--ok)}.YELLOW{color:var(--warn)}.RED{color:var(--bad)}.NEEDS{color:var(--warn)}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.kpi{background:#0a1323;border:1px solid #273751;padding:13px;border-radius:12px}.kpi small{display:block;color:var(--muted);margin-bottom:5px}.kpi strong{font-size:19px}
 .err{color:#fecaca;background:#3a1318;border:1px solid #6a2029;padding:11px;border-radius:10px}.expired{text-align:center}.expired h2{color:#fca5a5}
-.footer{text-align:center;color:#78869e;font-size:12px;padding:16px}
+.historyItem{border:1px solid #273751;background:#0a1323;border-radius:12px;padding:13px;margin:9px 0}.historyMeta{font-size:12px;color:var(--muted);margin-top:5px}.historyHead{display:flex;justify-content:space-between;gap:8px}.mini{width:auto;padding:8px 11px;font-size:12px}.footer{text-align:center;color:#78869e;font-size:12px;padding:16px}
+@media print{body{background:white;color:#111}.wrap{max-width:none}.no-print,#inputCard,#historyCard,.footer,#expired{display:none!important}.card{box-shadow:none;border:1px solid #bbb;background:white;color:#111}.lead,.note,.kpi small{color:#555}.kpi{background:#fff;border-color:#ccc}.pill{background:#fff;border-color:#ccc}}
 </style>
 </head>
 <body>
@@ -25,7 +27,7 @@ button{width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;font-w
     <div class="trial">
       <div>
         <h1>حارس ربح العروض</h1>
-        <p class="lead">قبل تنزل الخصم، اعرف هل العرض مربح وكم أعلى خصم آمن.</p>
+        <p class="lead">قبل تنزل الخصم، اعرف هل العرض مربح وكم أعلى خصم آمن. بياناتك تبقى على جهازك.</p>
       </div>
       <div class="pill" id="trialBadge">تجربة مجانية 3 أيام</div>
     </div>
@@ -33,13 +35,15 @@ button{width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;font-w
 
   <div id="expired" class="card expired hidden">
     <h2>انتهت التجربة المجانية</h2>
-    <p class="lead">كانت التجربة متاحة لمدة 3 أيام من أول استخدام.</p>
+    <p class="lead">التجربة كانت متاحة 3 أيام من أول استخدام على هذا المتصفح. تقاريرك المحفوظة محليًا لا تُرسل إلى AICOS.</p>
   </div>
 
   <div id="app">
-    <div class="card">
-      <h2>أدخل أرقام منتج واحد</h2>
+    <div id="inputCard" class="card">
+      <h2>بيانات الفحص</h2>
       <div class="grid">
+        <label>اسم المتجر (اختياري)<input id="storeName" placeholder="مثال: متجر الرحالة"></label>
+        <label>اسم المنتج<input id="productName" placeholder="مثال: حقيبة سفر"></label>
         <label>سعر البيع (ر.س)<input id="selling" inputmode="decimal" placeholder="مثال: 100"></label>
         <label>تكلفة المنتج عليك (ر.س)<input id="cost" inputmode="decimal" placeholder="مثال: 55"></label>
         <label>الخصم المقترح %<input id="discount" inputmode="decimal" value="0"></label>
@@ -47,9 +51,10 @@ button{width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;font-w
         <label>رسوم الدفع %<input id="feePct" inputmode="decimal" value="0"></label>
         <label>رسوم الدفع الثابتة (ر.س)<input id="feeFixed" inputmode="decimal" value="0"></label>
         <label>تكلفة إضافية لكل طلب (ر.س)<input id="additional" inputmode="decimal" value="0"></label>
+        <label>تكلفة ضريبية غير مستردة مؤكدة (ر.س)<input id="tax" inputmode="decimal" value="0"></label>
         <label>أقل هامش تبغاه %<input id="target" inputmode="decimal" value="15"></label>
       </div>
-      <p class="note">إذا تكلفة المنتج غير معروفة، اتركها فارغة. ما راح نعتبرها صفر.</p>
+      <p class="note">إذا تكلفة المنتج غير معروفة اتركها فارغة. لا نفترض رسومًا أو ضريبة من عندنا. كل الأرقام تخص وحدة/طلب واحد.</p>
       <button id="run">افحص الربحية الآن</button>
       <div id="error" class="err hidden" style="margin-top:12px"></div>
     </div>
@@ -57,87 +62,174 @@ button{width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;font-w
     <div id="result" class="card hidden">
       <div class="resultTop">
         <div>
-          <small style="color:var(--muted)">النتيجة</small>
+          <small style="color:var(--muted)">تقرير الفحص</small>
+          <h2 id="reportTitle" style="margin:4px 0"></h2>
           <div id="status" class="status"></div>
         </div>
-        <div class="pill">SIMULATION / ESTIMATE</div>
+        <div class="pill" id="reportDate"></div>
       </div>
+
       <div class="kpis">
+        <div class="kpi"><small>السعر الأصلي</small><strong id="gross">—</strong></div>
+        <div class="kpi"><small>الخصم المختبر</small><strong id="discountOut">—</strong></div>
         <div class="kpi"><small>السعر بعد الخصم</small><strong id="rev">—</strong></div>
+        <div class="kpi"><small>رسوم الدفع المقدرة</small><strong id="paymentFee">—</strong></div>
         <div class="kpi"><small>إجمالي التكاليف المتغيرة</small><strong id="costs">—</strong></div>
         <div class="kpi"><small>ربح المساهمة المقدر</small><strong id="profit">—</strong></div>
         <div class="kpi"><small>هامش المساهمة</small><strong id="margin">—</strong></div>
         <div class="kpi"><small>أقصى خصم آمن</small><strong id="safe">—</strong></div>
         <div class="kpi"><small>الحد الأدنى للهامش</small><strong id="targetOut">—</strong></div>
       </div>
+
       <p id="decision" class="lead" style="margin-top:14px"></p>
-      <p class="note">النتيجة تقدير لوحدة/طلب واحد بناءً على الأرقام المدخلة، وليست صافي ربح محاسبي للمتجر كامل.</p>
+      <p class="note">هذا تقدير لمنتج/طلب واحد بناءً على بياناتك، وليس صافي ربح محاسبي للمتجر كامل.</p>
+      <div class="actions no-print">
+        <button id="copyReport" class="secondary">نسخ التقرير</button>
+        <button id="downloadReport" class="secondary">تنزيل التقرير</button>
+        <button id="printReport" class="secondary">حفظ / طباعة PDF</button>
+      </div>
+    </div>
+
+    <div id="historyCard" class="card">
+      <div class="historyHead">
+        <div><h2>فحوصاتي السابقة</h2><p class="note">محفوظة على هذا المتصفح فقط.</p></div>
+        <button id="clearHistory" class="mini danger no-print">مسح بياناتي</button>
+      </div>
+      <div id="history"></div>
     </div>
   </div>
 
-  <div class="footer">AICOS Offer Profit Check · تجربة ميدانية مجانية</div>
+  <div class="footer">AICOS Offer Profit Check · تجربة ميدانية مجانية · لا نرفع بيانات منتجاتك إلى خادم</div>
 </div>
 
 <script>
-const TRIAL_MS=3*24*60*60*1000, KEY="aicos_profit_trial_started_v1";
-let started=Number(localStorage.getItem(KEY)||0);
-if(!started){started=Date.now();localStorage.setItem(KEY,String(started))}
+const TRIAL_MS=3*24*60*60*1000;
+const TRIAL_KEY="aicos_profit_trial_started_v1";
+const HISTORY_KEY="aicos_profit_checks_v2";
+let currentReport=null;
+
+let started=Number(localStorage.getItem(TRIAL_KEY)||0);
+if(!started){started=Date.now();localStorage.setItem(TRIAL_KEY,String(started))}
 function trial(){
   const left=TRIAL_MS-(Date.now()-started);
-  if(left<=0){document.getElementById("app").classList.add("hidden");document.getElementById("expired").classList.remove("hidden");document.getElementById("trialBadge").textContent="انتهت التجربة";return false}
-  const hrs=Math.ceil(left/3600000); document.getElementById("trialBadge").textContent="متبقي من التجربة: "+hrs+" ساعة"; return true
+  if(left<=0){
+    document.getElementById("app").classList.add("hidden");
+    document.getElementById("expired").classList.remove("hidden");
+    document.getElementById("trialBadge").textContent="انتهت التجربة";
+    return false;
+  }
+  const hrs=Math.ceil(left/3600000);
+  document.getElementById("trialBadge").textContent="متبقي من التجربة: "+hrs+" ساعة";
+  return true;
 }
-trial(); setInterval(trial,60000);
+trial();setInterval(trial,60000);
 
 const $=id=>document.getElementById(id);
 function moneyCents(s,nullable=false){
   s=String(s??"").trim();
-  if(nullable && s==="") return null;
-  if(!/^\d+(\.\d{1,2})?$/.test(s)) throw new Error("تأكد من المبالغ؛ مسموح رقم موجب وبحد أقصى خانتين عشريتين.");
-  const [a,b=""]=s.split("."); return BigInt(a)*100n+BigInt((b+"00").slice(0,2));
+  if(nullable&&s==="")return null;
+  if(!/^\d+(\.\d{1,2})?$/.test(s))throw new Error("تأكد من المبالغ؛ مسموح رقم موجب وبحد أقصى خانتين عشريتين.");
+  const [a,b=""]=s.split(".");
+  return BigInt(a)*100n+BigInt((b+"00").slice(0,2));
 }
 function pctUnits(s){
   s=String(s??"").trim();
-  if(!/^\d+(\.\d{1,4})?$/.test(s)) throw new Error("تأكد من النسب؛ مسموح حتى 4 خانات عشرية.");
-  const [a,b=""]=s.split("."); const u=BigInt(a)*10000n+BigInt((b+"0000").slice(0,4));
-  if(u>1000000n) throw new Error("النسبة لا تتجاوز 100%.");
+  if(!/^\d+(\.\d{1,4})?$/.test(s))throw new Error("تأكد من النسب؛ مسموح حتى 4 خانات عشرية.");
+  const [a,b=""]=s.split(".");
+  const u=BigInt(a)*10000n+BigInt((b+"0000").slice(0,4));
+  if(u>1000000n)throw new Error("النسبة لا تتجاوز 100%.");
   return u;
 }
-function roundDiv(n,d){if(n>=0n)return (n+d/2n)/d; return -(((-n)+d/2n)/d)}
-function ceilDiv(n,d){return (n+d-1n)/d}
-function fmtMoney(c){const neg=c<0n;c=neg?-c:c;return (neg?"-":"")+String(c/100n)+"."+String(c%100n).padStart(2,"0")+" ر.س"}
-function fmtPct4(u){const neg=u<0n;u=neg?-u:u;return (neg?"-":"")+String(u/10000n)+"."+String(u%10000n).padStart(4,"0")+"%"}
+function roundDiv(n,d){if(n>=0n)return(n+d/2n)/d;return-(((-n)+d/2n)/d)}
+function ceilDiv(n,d){return(n+d-1n)/d}
+function fmtMoney(c){const neg=c<0n;c=neg?-c:c;return(neg?"-":"")+String(c/100n)+"."+String(c%100n).padStart(2,"0")+" ر.س"}
+function fmtPct4(u){const neg=u<0n;u=neg?-u:u;return(neg?"-":"")+String(u/10000n)+"."+String(u%10000n).padStart(4,"0")+"%"}
 function fmtPct2(u){const v=u/100n;return String(v/100n)+"."+String(v%100n).padStart(2,"0")+"%"}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
+function getHistory(){try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]")}catch{return[]}}
+function saveReport(r){
+  const h=getHistory();
+  h.unshift(r);
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(h.slice(0,20)));
+  renderHistory();
+}
+function renderHistory(){
+  const h=getHistory();
+  $("history").innerHTML=h.length?h.map((r,i)=>'<div class="historyItem"><div class="historyHead"><div><strong>'+esc(r.productName||"منتج بدون اسم")+'</strong><div class="historyMeta">'+esc(r.storeName||"")+' · '+esc(r.date)+'</div></div><span class="'+esc(r.riskClass)+'">'+esc(r.status)+'</span></div><div class="historyMeta">الربح: '+esc(r.profit)+' · الهامش: '+esc(r.margin)+' · أقصى خصم: '+esc(r.safe)+'</div><button class="mini secondary no-print" onclick="loadHistory('+i+')">عرض التقرير</button></div>').join(""):'<p class="note">ما عندك فحوصات محفوظة حتى الآن.</p>';
+}
+window.loadHistory=function(i){
+  const r=getHistory()[i];if(!r)return;
+  currentReport=r;showReport(r);window.scrollTo({top:$("result").offsetTop-10,behavior:"smooth"});
+}
+function reportText(r){
+  return [
+    "AICOS — حارس ربح العروض",
+    r.storeName?"المتجر: "+r.storeName:null,
+    "المنتج: "+(r.productName||"غير مسمى"),
+    "التاريخ: "+r.date,
+    "",
+    "النتيجة: "+r.status,
+    "السعر الأصلي: "+r.gross,
+    "الخصم المختبر: "+r.discount,
+    "السعر بعد الخصم: "+r.revenue,
+    "رسوم الدفع المقدرة: "+r.paymentFee,
+    "إجمالي التكاليف المتغيرة: "+r.costs,
+    "ربح المساهمة المقدر: "+r.profit,
+    "هامش المساهمة: "+r.margin,
+    "أقصى خصم آمن: "+r.safe,
+    "الحد الأدنى للهامش: "+r.target,
+    "",
+    r.decision,
+    "",
+    "ملاحظة: النتيجة تقديرية لوحدة/طلب واحد بناءً على البيانات المدخلة وليست صافي ربح محاسبي للمتجر كامل."
+  ].filter(x=>x!==null).join("\n");
+}
+function showReport(r){
+  $("reportTitle").textContent=(r.storeName?r.storeName+" — ":"")+(r.productName||"المنتج");
+  $("reportDate").textContent=r.date;
+  $("status").textContent=r.status;$("status").className="status "+r.riskClass;
+  $("gross").textContent=r.gross;$("discountOut").textContent=r.discount;$("rev").textContent=r.revenue;
+  $("paymentFee").textContent=r.paymentFee;$("costs").textContent=r.costs;$("profit").textContent=r.profit;
+  $("margin").textContent=r.margin;$("safe").textContent=r.safe;$("targetOut").textContent=r.target;
+  $("decision").textContent=r.decision;$("result").classList.remove("hidden");
+}
 
 $("run").onclick=()=>{
-  if(!trial()) return;
-  $("error").classList.add("hidden"); $("result").classList.add("hidden");
+  if(!trial())return;
+  $("error").classList.add("hidden");$("result").classList.add("hidden");
   try{
-    const P=moneyCents($("selling").value); if(P<=0n) throw new Error("سعر البيع لازم يكون أكبر من صفر.");
+    const productName=$("productName").value.trim();
+    if(!productName)throw new Error("اكتب اسم المنتج عشان ينحفظ التقرير بشكل واضح.");
+    const storeName=$("storeName").value.trim();
+    const P=moneyCents($("selling").value);if(P<=0n)throw new Error("سعر البيع لازم يكون أكبر من صفر.");
     const C0=moneyCents($("cost").value,true);
     const disc=pctUnits($("discount").value);
     const ship=moneyCents($("shipping").value);
     const feePct=pctUnits($("feePct").value);
     const feeFixed=moneyCents($("feeFixed").value);
     const add=moneyCents($("additional").value);
+    const tax=moneyCents($("tax").value);
     const target=pctUnits($("target").value);
     const discountCents=roundDiv(P*disc,1000000n);
-    if(discountCents>P) throw new Error("الخصم لا يمكن يتجاوز سعر البيع.");
+    if(discountCents>P)throw new Error("الخصم لا يمكن يتجاوز سعر البيع.");
     const R=P-discountCents;
     const feeVar=roundDiv(R*feePct,1000000n);
     const paymentFee=feeVar+feeFixed;
-
-    $("rev").textContent=fmtMoney(R);
-    $("targetOut").textContent=fmtPct2(target);
+    const now=new Date();
+    const base={
+      id:String(Date.now()),
+      storeName,productName,
+      date:now.toLocaleString("ar-SA"),
+      gross:fmtMoney(P),discount:fmtPct2(disc),revenue:fmtMoney(R),
+      paymentFee:fmtMoney(paymentFee),target:fmtPct2(target)
+    };
 
     if(C0===null){
-      $("status").textContent="NEEDS COST DATA"; $("status").className="status NEEDS";
-      $("costs").textContent="غير متاح"; $("profit").textContent="غير متاح"; $("margin").textContent="غير متاح"; $("safe").textContent="غير متاح";
-      $("decision").textContent="أدخل تكلفة المنتج أولًا؛ ما اعتبرنا التكلفة صفر.";
-      $("result").classList.remove("hidden"); return;
+      const r={...base,status:"NEEDS COST DATA",riskClass:"NEEDS",costs:"غير متاح",profit:"غير متاح",margin:"غير متاح",safe:"غير متاح",decision:"أدخل تكلفة المنتج أولًا؛ ما اعتبرنا التكلفة صفر."};
+      currentReport=r;showReport(r);saveReport(r);return;
     }
 
-    const fixed=C0+ship+feeFixed+add;
+    const fixed=C0+ship+feeFixed+add+tax;
     const total=fixed+feeVar;
     const profit=R-total;
     const marginUnits=R>0n?roundDiv(profit*1000000n,R):null;
@@ -145,28 +237,46 @@ $("run").onclick=()=>{
     let safe=null;
     if(denom>0n){
       const minRevCeil=ceilDiv(fixed*1000000n,denom);
-      if(minRevCeil<=P) safe=P-minRevCeil;
-      if(safe!==null && safe>P-1n) safe=P-1n;
-      if(safe!==null && safe<0n) safe=null;
-    } else if(denom===0n && fixed===0n) safe=P-1n;
+      if(minRevCeil<=P)safe=P-minRevCeil;
+      if(safe!==null&&safe>P-1n)safe=P-1n;
+      if(safe!==null&&safe<0n)safe=null;
+    }else if(denom===0n&&fixed===0n)safe=P-1n;
 
     let risk;
-    if(marginUnits===null || profit<0n || marginUnits<target) risk="RED";
-    else if(marginUnits<target+20000n) risk="YELLOW";
+    if(marginUnits===null||profit<0n||marginUnits<target)risk="RED";
+    else if(marginUnits<target+20000n)risk="YELLOW";
     else risk="GREEN";
-
-    const map={GREEN:["GO ✅","العرض يحافظ على الهامش المطلوب حسب الأرقام المدخلة."],YELLOW:["CAUTION ⚠️","العرض قريب من الحد الأدنى؛ أي تكلفة إضافية قد تنزل الهامش."],RED:["DON'T LAUNCH 🔴","الخصم الحالي ينزل الهامش تحت الحد المطلوب حسب الأرقام المدخلة."]};
-    $("status").textContent=map[risk][0]; $("status").className="status "+risk;
-    $("costs").textContent=fmtMoney(total); $("profit").textContent=fmtMoney(profit); $("margin").textContent=marginUnits===null?"غير متاح":fmtPct4(marginUnits);
-    if(safe===null) $("safe").textContent="غير متاح";
-    else {
-      const safePct=(safe*1000000n)/P;
-      $("safe").textContent=fmtMoney(safe)+" / "+fmtPct2(safePct);
-    }
-    $("decision").textContent=map[risk][1];
-    $("result").classList.remove("hidden");
+    const map={
+      GREEN:["GO ✅","العرض يحافظ على الهامش المطلوب حسب الأرقام المدخلة."],
+      YELLOW:["CAUTION ⚠️","العرض قريب من الحد الأدنى؛ أي تكلفة إضافية قد تنزل الهامش."],
+      RED:["DON'T LAUNCH 🔴","الخصم الحالي ينزل الهامش تحت الحد المطلوب حسب الأرقام المدخلة."]
+    };
+    let safeText="غير متاح";
+    if(safe!==null){const safePct=(safe*1000000n)/P;safeText=fmtMoney(safe)+" / "+fmtPct2(safePct)}
+    const r={...base,status:map[risk][0],riskClass:risk,costs:fmtMoney(total),profit:fmtMoney(profit),margin:marginUnits===null?"غير متاح":fmtPct4(marginUnits),safe:safeText,decision:map[risk][1]};
+    currentReport=r;showReport(r);saveReport(r);
   }catch(e){$("error").textContent=e.message||"تعذر الحساب";$("error").classList.remove("hidden")}
 };
+
+$("copyReport").onclick=async()=>{
+  if(!currentReport)return;
+  try{await navigator.clipboard.writeText(reportText(currentReport));$("copyReport").textContent="تم النسخ ✓";setTimeout(()=>$("copyReport").textContent="نسخ التقرير",1500)}
+  catch{alert("تعذر النسخ تلقائيًا. استخدم تنزيل التقرير.")}
+};
+$("downloadReport").onclick=()=>{
+  if(!currentReport)return;
+  const blob=new Blob([reportText(currentReport)],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  const safeName=(currentReport.productName||"report").replace(/[^\p{L}\p{N}_-]+/gu,"-");
+  a.download="AICOS-"+safeName+".txt";a.click();URL.revokeObjectURL(a.href);
+};
+$("printReport").onclick=()=>{if(currentReport)window.print()};
+$("clearHistory").onclick=()=>{
+  if(confirm("تبغى تمسح كل الفحوصات المحفوظة على هذا المتصفح؟")){
+    localStorage.removeItem(HISTORY_KEY);currentReport=null;$("result").classList.add("hidden");renderHistory();
+  }
+};
+renderHistory();
 </script>
 </body>
 </html>
