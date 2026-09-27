@@ -353,29 +353,61 @@ $("pdfReport").onclick=async()=>{
   try{
     btn.disabled=true;btn.textContent="جارٍ تجهيز PDF…";
     if(typeof html2pdf==="undefined")throw new Error("PDF library unavailable");
-    const report=$("result").cloneNode(true);
-    const actions=report.querySelector(".actions");if(actions)actions.remove();
-    report.classList.remove("hidden");
-    report.style.background="#ffffff";report.style.color="#111111";report.style.border="1px solid #dddddd";report.style.boxShadow="none";report.style.direction="rtl";report.style.fontFamily='Tahoma, Arial, sans-serif';
-    report.querySelectorAll(".kpi").forEach(x=>{x.style.background="#ffffff";x.style.borderColor="#dddddd";x.style.color="#111111"});
-    report.querySelectorAll("small,.note,.lead").forEach(x=>x.style.color="#444444");
+
+    const r=currentReport;
+    const escPdf=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+    const row=(label,value)=>'<div style="display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid #e5e7eb;padding:10px 0"><span style="color:#555;font-size:14px">'+escPdf(label)+'</span><strong style="color:#111;font-size:15px;text-align:left">'+escPdf(value)+'</strong></div>';
+
     const shell=document.createElement("div");
-    shell.dir="rtl";shell.style.background="#ffffff";shell.style.color="#111111";shell.style.padding="22px";shell.style.width="760px";
-    const head=document.createElement("div");head.innerHTML='<div style="font-weight:800;font-size:20px;margin-bottom:6px">AICOS — حارس ربح العروض</div><div style="font-size:12px;color:#555;margin-bottom:14px">تقرير فحص ربحية العرض</div>';
-    shell.appendChild(head);shell.appendChild(report);document.body.appendChild(shell);
-    const safeName=(currentReport.productName||"report").replace(/[^A-Za-z0-9_\u0600-\u06FF-]+/g,"-");
+    shell.dir="rtl";
+    shell.style.cssText="width:760px;background:#fff;color:#111;padding:32px;font-family:Tahoma,Arial,sans-serif;position:fixed;top:0;left:0;z-index:-9999;display:block;visibility:visible;";
+    shell.innerHTML=
+      '<div style="font-weight:800;font-size:24px;color:#111;margin-bottom:4px">AICOS — حارس ربح العروض</div>'+
+      '<div style="font-size:13px;color:#666;margin-bottom:18px">تقرير فحص ربحية العرض</div>'+
+      (r.storeName?'<div style="font-size:15px;color:#111;margin-bottom:4px"><strong>المتجر:</strong> '+escPdf(r.storeName)+'</div>':'')+
+      '<div style="font-size:15px;color:#111;margin-bottom:4px"><strong>المنتج:</strong> '+escPdf(r.productName||"غير مسمى")+'</div>'+
+      '<div style="font-size:13px;color:#666;margin-bottom:18px">'+escPdf(r.date)+'</div>'+
+      '<div style="font-weight:800;font-size:21px;margin:14px 0;color:#111">النتيجة: '+escPdf(r.status)+'</div>'+
+      row("السعر الأصلي",r.gross)+
+      row("الخصم المختبر",r.discount)+
+      row("السعر بعد الخصم",r.revenue)+
+      row("رسوم الدفع المقدرة",r.paymentFee)+
+      row("إجمالي التكاليف المتغيرة",r.costs)+
+      row("ربح المساهمة المقدر",r.profit)+
+      row("هامش المساهمة",r.margin)+
+      row("أقصى خصم آمن",r.safe)+
+      row("الحد الأدنى للهامش",r.target)+
+      '<div style="margin-top:22px;font-weight:800;font-size:17px;color:#111">الأرقام المستخدمة</div>'+
+      row("تكلفة المنتج",r.inputCost||"غير متاح")+
+      row("الشحن على التاجر",r.inputShipping||"0.00 ر.س")+
+      row("رسوم الدفع %",r.inputFeePct||"0%")+
+      row("رسوم الدفع الثابتة",r.inputFeeFixed||"0.00 ر.س")+
+      row("تكلفة إضافية للطلب",r.inputAdditional||"0.00 ر.س")+
+      row("تكلفة ضريبية غير مستردة",r.inputTax||"0.00 ر.س")+
+      '<div style="margin-top:22px;padding:14px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;color:#111;font-size:15px;line-height:1.8">'+escPdf(r.decision)+'</div>'+
+      '<div style="margin-top:18px;font-size:11px;line-height:1.7;color:#666">النتيجة تقديرية لوحدة/طلب واحد بناءً على البيانات المدخلة، وليست صافي ربح محاسبي للمتجر كامل.</div>';
+
+    document.body.appendChild(shell);
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+
+    const safeName=(r.productName||"report").replace(/[^A-Za-z0-9_\u0600-\u06FF-]+/g,"-");
     await html2pdf().set({
-      margin:8,
+      margin:[8,8,8,8],
       filename:"AICOS-"+safeName+".pdf",
       image:{type:"jpeg",quality:0.98},
-      html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff"},
+      html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",logging:false},
       jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},
-      pagebreak:{mode:["avoid-all","css","legacy"]}
+      pagebreak:{mode:["css","legacy"]}
     }).from(shell).save();
+
     shell.remove();
-    btn.textContent="تم تحميل PDF ✓";setTimeout(()=>btn.textContent=old,1600);
-  }catch(e){alert("تعذر إنشاء PDF مباشرة. تأكد من اتصال الإنترنت ثم حاول مرة ثانية.");btn.textContent=old}
-  finally{btn.disabled=false}
+    btn.textContent="تم تحميل PDF ✓";
+    setTimeout(()=>btn.textContent=old,1600);
+  }catch(e){
+    const tmp=document.querySelector('[data-aicos-pdf-temp="1"]');if(tmp)tmp.remove();
+    alert("تعذر إنشاء PDF. حدّث الصفحة وحاول مرة ثانية.");
+    btn.textContent=old;
+  }finally{btn.disabled=false}
 };
 $("clearHistory").onclick=()=>{
   if(confirm("تبغى تمسح كل الفحوصات المحفوظة على هذا المتصفح؟")){
