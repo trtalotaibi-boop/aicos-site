@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AICOS Offer Profit Check — تجربة مجانية 3 أيام</title>
+<meta name="description" content="افحص ربحية العرض قبل إطلاقه: الربح، الهامش، وأقصى خصم آمن.">
+<style>
+:root{--bg:#0b1220;--card:#111a2b;--line:#26344d;--text:#eef4ff;--muted:#a8b3c7;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444;--accent:#5b8cff}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#09111f,#0d1627);color:var(--text)}
+.wrap{max-width:760px;margin:auto;padding:22px}.brand{font-weight:800;letter-spacing:.5px;color:#9db7ff}.card{background:rgba(17,26,43,.96);border:1px solid var(--line);border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 12px 34px rgba(0,0,0,.18)}
+h1{font-size:28px;margin:8px 0}h2{font-size:19px;margin:0 0 14px}.lead{color:var(--muted);line-height:1.8;margin:0}.trial{display:flex;justify-content:space-between;gap:12px;align-items:center}.pill{background:#17233a;border:1px solid #30425f;border-radius:999px;padding:8px 12px;font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.grid{grid-template-columns:1fr}}
+label{font-size:13px;color:#cbd5e1;display:block}input{width:100%;margin-top:7px;background:#0a1323;color:#fff;border:1px solid #33435e;border-radius:11px;padding:12px;font-size:16px;outline:none}input:focus{border-color:var(--accent)}
+button{width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:800;background:var(--accent);color:white;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.7}.hidden{display:none}.resultTop{display:flex;justify-content:space-between;gap:10px;align-items:center}.status{font-weight:900;font-size:22px}.GREEN{color:var(--ok)}.YELLOW{color:var(--warn)}.RED{color:var(--bad)}.NEEDS{color:var(--warn)}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.kpi{background:#0a1323;border:1px solid #273751;padding:13px;border-radius:12px}.kpi small{display:block;color:var(--muted);margin-bottom:5px}.kpi strong{font-size:20px}
+.err{color:#fecaca;background:#3a1318;border:1px solid #6a2029;padding:11px;border-radius:10px}.expired{text-align:center}.expired h2{color:#fca5a5}
+.footer{text-align:center;color:#78869e;font-size:12px;padding:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">AICOS</div>
+  <div class="card">
+    <div class="trial">
+      <div>
+        <h1>حارس ربح العروض</h1>
+        <p class="lead">قبل تنزل الخصم، اعرف هل العرض مربح وكم أعلى خصم آمن.</p>
+      </div>
+      <div class="pill" id="trialBadge">تجربة مجانية 3 أيام</div>
+    </div>
+  </div>
+
+  <div id="expired" class="card expired hidden">
+    <h2>انتهت التجربة المجانية</h2>
+    <p class="lead">كانت التجربة متاحة لمدة 3 أيام من أول استخدام.</p>
+  </div>
+
+  <div id="app">
+    <div class="card">
+      <h2>أدخل أرقام منتج واحد</h2>
+      <div class="grid">
+        <label>سعر البيع (ر.س)<input id="selling" inputmode="decimal" placeholder="مثال: 100"></label>
+        <label>تكلفة المنتج عليك (ر.س)<input id="cost" inputmode="decimal" placeholder="مثال: 55"></label>
+        <label>الخصم المقترح %<input id="discount" inputmode="decimal" value="0"></label>
+        <label>الشحن اللي تتحمله (ر.س)<input id="shipping" inputmode="decimal" value="0"></label>
+        <label>رسوم الدفع %<input id="feePct" inputmode="decimal" value="0"></label>
+        <label>رسوم الدفع الثابتة (ر.س)<input id="feeFixed" inputmode="decimal" value="0"></label>
+        <label>تكلفة إضافية لكل طلب (ر.س)<input id="additional" inputmode="decimal" value="0"></label>
+        <label>أقل هامش تبغاه %<input id="target" inputmode="decimal" value="15"></label>
+      </div>
+      <p class="note">إذا تكلفة المنتج غير معروفة، اتركها فارغة. ما راح نعتبرها صفر.</p>
+      <button id="run">افحص الربحية الآن</button>
+      <div id="error" class="err hidden" style="margin-top:12px"></div>
+    </div>
+
+    <div id="result" class="card hidden">
+      <div class="resultTop">
+        <div>
+          <small style="color:var(--muted)">النتيجة</small>
+          <div id="status" class="status"></div>
+        </div>
+        <div class="pill">SIMULATION / ESTIMATE</div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><small>السعر بعد الخصم</small><strong id="rev">—</strong></div>
+        <div class="kpi"><small>إجمالي التكاليف المتغيرة</small><strong id="costs">—</strong></div>
+        <div class="kpi"><small>ربح المساهمة المقدر</small><strong id="profit">—</strong></div>
+        <div class="kpi"><small>هامش المساهمة</small><strong id="margin">—</strong></div>
+        <div class="kpi"><small>أقصى خصم آمن</small><strong id="safe">—</strong></div>
+        <div class="kpi"><small>الحد الأدنى للهامش</small><strong id="targetOut">—</strong></div>
+      </div>
+      <p id="decision" class="lead" style="margin-top:14px"></p>
+      <p class="note">النتيجة تقدير لوحدة/طلب واحد بناءً على الأرقام المدخلة، وليست صافي ربح محاسبي للمتجر كامل.</p>
+    </div>
+  </div>
+
+  <div class="footer">AICOS Offer Profit Check · تجربة ميدانية مجانية</div>
+</div>
+
+<script>
+const TRIAL_MS=3*24*60*60*1000, KEY="aicos_profit_trial_started_v1";
+let started=Number(localStorage.getItem(KEY)||0);
+if(!started){started=Date.now();localStorage.setItem(KEY,String(started))}
+function trial(){
+  const left=TRIAL_MS-(Date.now()-started);
+  if(left<=0){document.getElementById("app").classList.add("hidden");document.getElementById("expired").classList.remove("hidden");document.getElementById("trialBadge").textContent="انتهت التجربة";return false}
+  const hrs=Math.ceil(left/3600000); document.getElementById("trialBadge").textContent="متبقي من التجربة: "+hrs+" ساعة"; return true
+}
+trial(); setInterval(trial,60000);
+
+const $=id=>document.getElementById(id);
+function moneyCents(s,nullable=false){
+  s=String(s??"").trim();
+  if(nullable && s==="") return null;
+  if(!/^\d+(\.\d{1,2})?$/.test(s)) throw new Error("تأكد من المبالغ؛ مسموح رقم موجب وبحد أقصى خانتين عشريتين.");
+  const [a,b=""]=s.split("."); return BigInt(a)*100n+BigInt((b+"00").slice(0,2));
+}
+function pctUnits(s){
+  s=String(s??"").trim();
+  if(!/^\d+(\.\d{1,4})?$/.test(s)) throw new Error("تأكد من النسب؛ مسموح حتى 4 خانات عشرية.");
+  const [a,b=""]=s.split("."); const u=BigInt(a)*10000n+BigInt((b+"0000").slice(0,4));
+  if(u>1000000n) throw new Error("النسبة لا تتجاوز 100%.");
+  return u;
+}
+function roundDiv(n,d){if(n>=0n)return (n+d/2n)/d; return -(((-n)+d/2n)/d)}
+function ceilDiv(n,d){return (n+d-1n)/d}
+function fmtMoney(c){const neg=c<0n;c=neg?-c:c;return (neg?"-":"")+String(c/100n)+"."+String(c%100n).padStart(2,"0")+" ر.س"}
+function fmtPct4(u){const neg=u<0n;u=neg?-u:u;return (neg?"-":"")+String(u/10000n)+"."+String(u%10000n).padStart(4,"0")+"%"}
+function fmtPct2(u){const v=u/100n;return String(v/100n)+"."+String(v%100n).padStart(2,"0")+"%"}
+
+$("run").onclick=()=>{
+  if(!trial()) return;
+  $("error").classList.add("hidden"); $("result").classList.add("hidden");
+  try{
+    const P=moneyCents($("selling").value); if(P<=0n) throw new Error("سعر البيع لازم يكون أكبر من صفر.");
+    const C0=moneyCents($("cost").value,true);
+    const disc=pctUnits($("discount").value);
+    const ship=moneyCents($("shipping").value);
+    const feePct=pctUnits($("feePct").value);
+    const feeFixed=moneyCents($("feeFixed").value);
+    const add=moneyCents($("additional").value);
+    const target=pctUnits($("target").value);
+    const discountCents=roundDiv(P*disc,1000000n);
+    if(discountCents>P) throw new Error("الخصم لا يمكن يتجاوز سعر البيع.");
+    const R=P-discountCents;
+    const feeVar=roundDiv(R*feePct,1000000n);
+    const paymentFee=feeVar+feeFixed;
+
+    $("rev").textContent=fmtMoney(R);
+    $("targetOut").textContent=fmtPct2(target);
+
+    if(C0===null){
+      $("status").textContent="NEEDS COST DATA"; $("status").className="status NEEDS";
+      $("costs").textContent="غير متاح"; $("profit").textContent="غير متاح"; $("margin").textContent="غير متاح"; $("safe").textContent="غير متاح";
+      $("decision").textContent="أدخل تكلفة المنتج أولًا؛ ما اعتبرنا التكلفة صفر.";
+      $("result").classList.remove("hidden"); return;
+    }
+
+    const fixed=C0+ship+feeFixed+add;
+    const total=fixed+feeVar;
+    const profit=R-total;
+    const marginUnits=R>0n?roundDiv(profit*1000000n,R):null;
+    const denom=1000000n-feePct-target;
+    let safe=null;
+    if(denom>0n){
+      const minRevCeil=ceilDiv(fixed*1000000n,denom);
+      if(minRevCeil<=P) safe=P-minRevCeil;
+      if(safe!==null && safe>P-1n) safe=P-1n;
+      if(safe!==null && safe<0n) safe=null;
+    } else if(denom===0n && fixed===0n) safe=P-1n;
+
+    let risk;
+    if(marginUnits===null || profit<0n || marginUnits<target) risk="RED";
+    else if(marginUnits<target+20000n) risk="YELLOW";
+    else risk="GREEN";
+
+    const map={GREEN:["GO ✅","العرض يحافظ على الهامش المطلوب حسب الأرقام المدخلة."],YELLOW:["CAUTION ⚠️","العرض قريب من الحد الأدنى؛ أي تكلفة إضافية قد تنزل الهامش."],RED:["DON'T LAUNCH 🔴","الخصم الحالي ينزل الهامش تحت الحد المطلوب حسب الأرقام المدخلة."]};
+    $("status").textContent=map[risk][0]; $("status").className="status "+risk;
+    $("costs").textContent=fmtMoney(total); $("profit").textContent=fmtMoney(profit); $("margin").textContent=marginUnits===null?"غير متاح":fmtPct4(marginUnits);
+    if(safe===null) $("safe").textContent="غير متاح";
+    else {
+      const safePct=(safe*1000000n)/P;
+      $("safe").textContent=fmtMoney(safe)+" / "+fmtPct2(safePct);
+    }
+    $("decision").textContent=map[risk][1];
+    $("result").classList.remove("hidden");
+  }catch(e){$("error").textContent=e.message||"تعذر الحساب";$("error").classList.remove("hidden")}
+};
+</script>
+</body>
+</html>
