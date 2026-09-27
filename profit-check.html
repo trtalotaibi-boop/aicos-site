@@ -120,8 +120,17 @@ const HISTORY_KEY="aicos_profit_checks_v2";
 let currentReport=null;
 
 let started=Number(localStorage.getItem(TRIAL_KEY)||0);
-if(!started){started=Date.now();localStorage.setItem(TRIAL_KEY,String(started))}
+function startTrialIfNeeded(){
+  if(!started){
+    started=Date.now();
+    localStorage.setItem(TRIAL_KEY,String(started));
+  }
+}
 function trial(){
+  if(!started){
+    document.getElementById("trialBadge").textContent="تجربة مجانية 3 أيام · تبدأ عند أول فحص";
+    return true;
+  }
   const left=TRIAL_MS-(Date.now()-started);
   if(left<=0){
     document.getElementById("inputCard").classList.add("hidden");
@@ -219,6 +228,7 @@ function showReport(r){
 }
 
 $("run").onclick=()=>{
+  startTrialIfNeeded();
   if(!trial())return;
   $("error").classList.add("hidden");$("result").classList.add("hidden");
   try{
