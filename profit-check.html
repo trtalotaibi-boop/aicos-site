@@ -85,8 +85,8 @@ button{width:100%;border:0;border-radius:12px;padding:14px;font-size:15px;font-w
       <p class="note">هذا تقدير لمنتج/طلب واحد بناءً على بياناتك، وليس صافي ربح محاسبي للمتجر كامل.</p>
       <div class="actions no-print">
         <button id="copyReport" class="secondary">نسخ التقرير</button>
-        <button id="downloadReport" class="secondary">تنزيل التقرير</button>
-        <button id="printReport" class="secondary">حفظ / طباعة PDF</button>
+        <button id="downloadReport" class="secondary">تنزيل التقرير TXT</button>
+        <button id="pdfReport" class="secondary">تحميل PDF مباشر</button>
       </div>
     </div>
 
@@ -102,6 +102,7 @@ button{width:100%;border:0;border-radius:12px;padding:14px;font-size:15px;font-w
   <div class="footer">AICOS Offer Profit Check · تجربة ميدانية مجانية · لا نرفع بيانات منتجاتك إلى خادم</div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 <script>
 const TRIAL_MS=3*24*60*60*1000;
 const TRIAL_KEY="aicos_profit_trial_started_v1";
@@ -270,7 +271,36 @@ $("downloadReport").onclick=()=>{
   const safeName=(currentReport.productName||"report").replace(/[^\p{L}\p{N}_-]+/gu,"-");
   a.download="AICOS-"+safeName+".txt";a.click();URL.revokeObjectURL(a.href);
 };
-$("printReport").onclick=()=>{if(currentReport)window.print()};
+$("pdfReport").onclick=async()=>{
+  if(!currentReport)return;
+  const btn=$("pdfReport"), old=btn.textContent;
+  try{
+    btn.disabled=true;btn.textContent="جارٍ تجهيز PDF…";
+    if(typeof html2pdf==="undefined")throw new Error("PDF library unavailable");
+    const report=$("result").cloneNode(true);
+    const actions=report.querySelector(".actions");if(actions)actions.remove();
+    report.classList.remove("hidden");
+    report.style.background="#ffffff";report.style.color="#111111";report.style.border="1px solid #dddddd";report.style.boxShadow="none";report.style.direction="rtl";report.style.fontFamily='Tahoma, Arial, sans-serif';
+    report.querySelectorAll(".kpi").forEach(x=>{x.style.background="#ffffff";x.style.borderColor="#dddddd";x.style.color="#111111"});
+    report.querySelectorAll("small,.note,.lead").forEach(x=>x.style.color="#444444");
+    const shell=document.createElement("div");
+    shell.dir="rtl";shell.style.background="#ffffff";shell.style.color="#111111";shell.style.padding="22px";shell.style.width="760px";
+    const head=document.createElement("div");head.innerHTML='<div style="font-weight:800;font-size:20px;margin-bottom:6px">AICOS — حارس ربح العروض</div><div style="font-size:12px;color:#555;margin-bottom:14px">تقرير فحص ربحية العرض</div>';
+    shell.appendChild(head);shell.appendChild(report);document.body.appendChild(shell);
+    const safeName=(currentReport.productName||"report").replace(/[^\\p{L}\\p{N}_-]+/gu,"-");
+    await html2pdf().set({
+      margin:8,
+      filename:"AICOS-"+safeName+".pdf",
+      image:{type:"jpeg",quality:0.98},
+      html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff"},
+      jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},
+      pagebreak:{mode:["avoid-all","css","legacy"]}
+    }).from(shell).save();
+    shell.remove();
+    btn.textContent="تم تحميل PDF ✓";setTimeout(()=>btn.textContent=old,1600);
+  }catch(e){alert("تعذر إنشاء PDF مباشرة. تأكد من اتصال الإنترنت ثم حاول مرة ثانية.");btn.textContent=old}
+  finally{btn.disabled=false}
+};
 $("clearHistory").onclick=()=>{
   if(confirm("تبغى تمسح كل الفحوصات المحفوظة على هذا المتصفح؟")){
     localStorage.removeItem(HISTORY_KEY);currentReport=null;$("result").classList.add("hidden");renderHistory();
