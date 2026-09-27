@@ -81,6 +81,15 @@ button{width:100%;border:0;border-radius:12px;padding:14px;font-size:15px;font-w
         <div class="kpi"><small>الحد الأدنى للهامش</small><strong id="targetOut">—</strong></div>
       </div>
 
+      <h3 style="margin-top:18px">الأرقام المستخدمة في الفحص</h3>
+      <div class="kpis">
+        <div class="kpi"><small>تكلفة المنتج</small><strong id="inputCost">—</strong></div>
+        <div class="kpi"><small>الشحن على التاجر</small><strong id="inputShipping">—</strong></div>
+        <div class="kpi"><small>رسوم الدفع %</small><strong id="inputFeePct">—</strong></div>
+        <div class="kpi"><small>رسوم الدفع الثابتة</small><strong id="inputFeeFixed">—</strong></div>
+        <div class="kpi"><small>تكلفة إضافية للطلب</small><strong id="inputAdditional">—</strong></div>
+        <div class="kpi"><small>تكلفة ضريبية غير مستردة</small><strong id="inputTax">—</strong></div>
+      </div>
       <p id="decision" class="lead" style="margin-top:14px"></p>
       <p class="note">هذا تقدير لمنتج/طلب واحد بناءً على بياناتك، وليس صافي ربح محاسبي للمتجر كامل.</p>
       <div class="actions no-print">
@@ -102,6 +111,7 @@ button{width:100%;border:0;border-radius:12px;padding:14px;font-size:15px;font-w
   <div class="footer">AICOS Offer Profit Check · تجربة ميدانية مجانية · لا نرفع بيانات منتجاتك إلى خادم</div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/decimal.js@10.6.0/decimal.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 <script>
 const TRIAL_MS=3*24*60*60*1000;
@@ -114,7 +124,7 @@ if(!started){started=Date.now();localStorage.setItem(TRIAL_KEY,String(started))}
 function trial(){
   const left=TRIAL_MS-(Date.now()-started);
   if(left<=0){
-    document.getElementById("app").classList.add("hidden");
+    document.getElementById("inputCard").classList.add("hidden");
     document.getElementById("expired").classList.remove("hidden");
     document.getElementById("trialBadge").textContent="انتهت التجربة";
     return false;
@@ -180,6 +190,13 @@ function reportText(r){
     "أقصى خصم آمن: "+r.safe,
     "الحد الأدنى للهامش: "+r.target,
     "",
+    "الأرقام المستخدمة:",
+    "تكلفة المنتج: "+r.inputCost,
+    "الشحن على التاجر: "+r.inputShipping,
+    "رسوم الدفع: "+r.inputFeePct+" + "+r.inputFeeFixed,
+    "تكلفة إضافية للطلب: "+r.inputAdditional,
+    "تكلفة ضريبية غير مستردة: "+r.inputTax,
+    "",
     r.decision,
     "",
     "ملاحظة: النتيجة تقديرية لوحدة/طلب واحد بناءً على البيانات المدخلة وليست صافي ربح محاسبي للمتجر كامل."
@@ -192,6 +209,12 @@ function showReport(r){
   $("gross").textContent=r.gross;$("discountOut").textContent=r.discount;$("rev").textContent=r.revenue;
   $("paymentFee").textContent=r.paymentFee;$("costs").textContent=r.costs;$("profit").textContent=r.profit;
   $("margin").textContent=r.margin;$("safe").textContent=r.safe;$("targetOut").textContent=r.target;
+  $("inputCost").textContent=r.inputCost||"غير متاح";
+  $("inputShipping").textContent=r.inputShipping||"0.00 ر.س";
+  $("inputFeePct").textContent=r.inputFeePct||"0%";
+  $("inputFeeFixed").textContent=r.inputFeeFixed||"0.00 ر.س";
+  $("inputAdditional").textContent=r.inputAdditional||"0.00 ر.س";
+  $("inputTax").textContent=r.inputTax||"0.00 ر.س";
   $("decision").textContent=r.decision;$("result").classList.remove("hidden");
 }
 
@@ -199,64 +222,107 @@ $("run").onclick=()=>{
   if(!trial())return;
   $("error").classList.add("hidden");$("result").classList.add("hidden");
   try{
+    if(typeof Decimal==="undefined")throw new Error("تعذر تحميل محرك الحساب. حدّث الصفحة وحاول مرة ثانية.");
+    Decimal.set({precision:40,rounding:Decimal.ROUND_HALF_UP});
+
     const productName=$("productName").value.trim();
     if(!productName)throw new Error("اكتب اسم المنتج عشان ينحفظ التقرير بشكل واضح.");
     const storeName=$("storeName").value.trim();
-    const P=moneyCents($("selling").value);if(P<=0n)throw new Error("سعر البيع لازم يكون أكبر من صفر.");
-    const C0=moneyCents($("cost").value,true);
-    const disc=pctUnits($("discount").value);
-    const ship=moneyCents($("shipping").value);
-    const feePct=pctUnits($("feePct").value);
-    const feeFixed=moneyCents($("feeFixed").value);
-    const add=moneyCents($("additional").value);
-    const tax=moneyCents($("tax").value);
-    const target=pctUnits($("target").value);
-    const discountCents=roundDiv(P*disc,1000000n);
-    if(discountCents>P)throw new Error("الخصم لا يمكن يتجاوز سعر البيع.");
-    const R=P-discountCents;
-    const feeVar=roundDiv(R*feePct,1000000n);
-    const paymentFee=feeVar+feeFixed;
+
+    const raw={
+      selling:$("selling").value.trim(),
+      cost:$("cost").value.trim(),
+      discount:$("discount").value.trim(),
+      shipping:$("shipping").value.trim(),
+      feePct:$("feePct").value.trim(),
+      feeFixed:$("feeFixed").value.trim(),
+      additional:$("additional").value.trim(),
+      tax:$("tax").value.trim(),
+      target:$("target").value.trim()
+    };
+    const moneyRe=/^(0|[1-9]\d{0,8})(\.\d{1,2})?$/;
+    const pctRe=/^(0|[1-9]\d{0,2})(\.\d{1,4})?$/;
+    const reqMoney=["selling","shipping","feeFixed","additional","tax"];
+    for(const k of reqMoney)if(!moneyRe.test(raw[k]))throw new Error("تأكد من المبالغ؛ بحد أقصى خانتين عشريتين وبدون أرقام سالبة.");
+    for(const k of ["discount","feePct","target"])if(!pctRe.test(raw[k])||new Decimal(raw[k]).gt(100))throw new Error("تأكد من النسب؛ من 0 إلى 100 وبحد أقصى 4 خانات عشرية.");
+    if(raw.cost!==""&&!moneyRe.test(raw.cost))throw new Error("تأكد من تكلفة المنتج؛ بحد أقصى خانتين عشريتين.");
+    
+    const price=new Decimal(raw.selling);
+    if(!price.gt(0))throw new Error("سعر البيع لازم يكون أكبر من صفر.");
+    const discount=price.mul(raw.discount).div(100);
+    if(discount.gt(price))throw new Error("الخصم لا يمكن يتجاوز سعر البيع.");
+    const revenue=price.minus(discount);
+    const feeRate=new Decimal(raw.feePct).div(100);
+    const fee=revenue.mul(feeRate).plus(raw.feeFixed);
+    const moneyOut=v=>new Decimal(v).toFixed(2,Decimal.ROUND_HALF_UP);
+    const pct4=v=>new Decimal(v).toFixed(4);
+    const pct2Floor=v=>new Decimal(v).toFixed(2,Decimal.ROUND_FLOOR);
+
     const now=new Date();
     const base={
-      id:String(Date.now()),
-      storeName,productName,
-      date:now.toLocaleString("ar-SA"),
-      gross:fmtMoney(P),discount:fmtPct2(disc),revenue:fmtMoney(R),
-      paymentFee:fmtMoney(paymentFee),target:fmtPct2(target)
+      id:String(Date.now()),storeName,productName,date:now.toLocaleString("ar-SA"),
+      gross:moneyOut(price)+" ر.س",
+      discount:new Decimal(raw.discount).toFixed(2)+"%",
+      revenue:moneyOut(revenue)+" ر.س",
+      paymentFee:moneyOut(fee)+" ر.س",
+      target:new Decimal(raw.target).toFixed(2)+"%",
+      inputCost:raw.cost===""?"غير معروف":moneyOut(raw.cost)+" ر.س",
+      inputShipping:moneyOut(raw.shipping)+" ر.س",
+      inputFeePct:new Decimal(raw.feePct).toFixed(4)+"%",
+      inputFeeFixed:moneyOut(raw.feeFixed)+" ر.س",
+      inputAdditional:moneyOut(raw.additional)+" ر.س",
+      inputTax:moneyOut(raw.tax)+" ر.س"
     };
 
-    if(C0===null){
+    if(raw.cost===""){
       const r={...base,status:"NEEDS COST DATA",riskClass:"NEEDS",costs:"غير متاح",profit:"غير متاح",margin:"غير متاح",safe:"غير متاح",decision:"أدخل تكلفة المنتج أولًا؛ ما اعتبرنا التكلفة صفر."};
       currentReport=r;showReport(r);saveReport(r);return;
     }
 
-    const fixed=C0+ship+feeFixed+add+tax;
-    const total=fixed+feeVar;
-    const profit=R-total;
-    const marginUnits=R>0n?roundDiv(profit*1000000n,R):null;
-    const denom=1000000n-feePct-target;
+    const fixed=new Decimal(raw.cost).plus(raw.shipping).plus(raw.feeFixed).plus(raw.additional).plus(raw.tax);
+    const costs=fixed.plus(revenue.mul(feeRate));
+    const profit=revenue.minus(costs);
+    const margin=revenue.gt(0)?profit.div(revenue).mul(100):null;
+    const target=new Decimal(raw.target);
+    const denominator=new Decimal(1).minus(feeRate).minus(target.div(100));
     let safe=null;
-    if(denom>0n){
-      const minRevCeil=ceilDiv(fixed*1000000n,denom);
-      if(minRevCeil<=P)safe=P-minRevCeil;
-      if(safe!==null&&safe>P-1n)safe=P-1n;
-      if(safe!==null&&safe<0n)safe=null;
-    }else if(denom===0n&&fixed===0n)safe=P-1n;
+    if(denominator.gt(0)){
+      const minRevenue=fixed.div(denominator);
+      if(minRevenue.lte(price)){
+        safe=Decimal.min(price.minus("0.01"),price.minus(minRevenue)).toDecimalPlaces(2,Decimal.ROUND_FLOOR);
+      }
+    }else if(denominator.eq(0)&&fixed.eq(0)){
+      safe=price.minus("0.01");
+    }
 
     let risk;
-    if(marginUnits===null||profit<0n||marginUnits<target)risk="RED";
-    else if(marginUnits<target+20000n)risk="YELLOW";
+    if(margin===null||profit.lt(0)||margin.lt(target))risk="RED";
+    else if(margin.lt(target.plus(2)))risk="YELLOW";
     else risk="GREEN";
+
     const map={
       GREEN:["GO ✅","العرض يحافظ على الهامش المطلوب حسب الأرقام المدخلة."],
       YELLOW:["CAUTION ⚠️","العرض قريب من الحد الأدنى؛ أي تكلفة إضافية قد تنزل الهامش."],
       RED:["DON'T LAUNCH 🔴","الخصم الحالي ينزل الهامش تحت الحد المطلوب حسب الأرقام المدخلة."]
     };
+
     let safeText="غير متاح";
-    if(safe!==null){const safePct=(safe*1000000n)/P;safeText=fmtMoney(safe)+" / "+fmtPct2(safePct)}
-    const r={...base,status:map[risk][0],riskClass:risk,costs:fmtMoney(total),profit:fmtMoney(profit),margin:marginUnits===null?"غير متاح":fmtPct4(marginUnits),safe:safeText,decision:map[risk][1]};
+    if(safe!==null){
+      const safePct=safe.div(price).mul(100);
+      safeText=safe.toFixed(2)+" ر.س / "+pct2Floor(safePct)+"%";
+    }
+    const r={
+      ...base,status:map[risk][0],riskClass:risk,
+      costs:moneyOut(costs)+" ر.س",
+      profit:moneyOut(profit)+" ر.س",
+      margin:margin===null?"غير متاح":pct4(margin)+"%",
+      safe:safeText,decision:map[risk][1]
+    };
     currentReport=r;showReport(r);saveReport(r);
-  }catch(e){$("error").textContent=e.message||"تعذر الحساب";$("error").classList.remove("hidden")}
+  }catch(e){
+    $("error").textContent=e.message||"تعذر الحساب";
+    $("error").classList.remove("hidden");
+  }
 };
 
 $("copyReport").onclick=async()=>{
@@ -287,7 +353,7 @@ $("pdfReport").onclick=async()=>{
     shell.dir="rtl";shell.style.background="#ffffff";shell.style.color="#111111";shell.style.padding="22px";shell.style.width="760px";
     const head=document.createElement("div");head.innerHTML='<div style="font-weight:800;font-size:20px;margin-bottom:6px">AICOS — حارس ربح العروض</div><div style="font-size:12px;color:#555;margin-bottom:14px">تقرير فحص ربحية العرض</div>';
     shell.appendChild(head);shell.appendChild(report);document.body.appendChild(shell);
-    const safeName=(currentReport.productName||"report").replace(/[^\\p{L}\\p{N}_-]+/gu,"-");
+    const safeName=(currentReport.productName||"report").replace(/[^A-Za-z0-9_\u0600-\u06FF-]+/g,"-");
     await html2pdf().set({
       margin:8,
       filename:"AICOS-"+safeName+".pdf",
